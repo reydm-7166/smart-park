@@ -1,5 +1,6 @@
 package com.smart_park.dto;
 
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,6 +14,11 @@ public class ParkingRecordRequestDTO
 
     @NotNull(message = "Parking code is required.")
     private Long parkingId;
+
+    private Boolean isActive;
+
+    public Boolean getIsActive() { return isActive; }
+    public void setIsActive(Boolean isActive) { this.isActive = isActive; }
 
     // getters and setters
     public Long getVehicleId() { return vehicleId; }

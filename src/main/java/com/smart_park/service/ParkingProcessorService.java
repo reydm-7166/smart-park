@@ -5,11 +5,16 @@ import com.smart_park.domain.ParkingRecord;
 import com.smart_park.domain.Vehicle;
 import com.smart_park.dto.ParkingRecordRequestDTO;
 import com.smart_park.exceptions.parking.ParkingLotNotExistingException;
+import com.smart_park.exceptions.record.ParkingRecordNotExistingException;
 import com.smart_park.exceptions.vehicle.VehicleNotExistingException;
 import com.smart_park.repository.ParkingLotRepository;
 import com.smart_park.repository.ParkingProcessorRepository;
 import com.smart_park.repository.VehicleRepository;
+import com.smart_park.util.ParkingFeeCalculatorUtil;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class ParkingProcessorService {
@@ -29,12 +34,17 @@ public class ParkingProcessorService {
 
     public void checkIn(ParkingRecordRequestDTO parkingRecord) {
 
-        Vehicle vehicle = vehicleRepository.findById(parkingRecord.getVehicleId()).orElseThrow(
-                                                () -> new VehicleNotExistingException("Vehicle not found")
+        Vehicle vehicle =  vehicleRepository.findById(parkingRecord.getVehicleId())
+                                            .orElseThrow(
+                                                    () -> new VehicleNotExistingException("Vehicle not found")
                                             );
-        ParkingLot parkingLot = parkingLotRepository.findById(parkingRecord.getParkingId()).orElseThrow(
-                                                        () -> new ParkingLotNotExistingException("Parking lot not found")
-                                                    );
+        ParkingLot parkingLot = parkingLotRepository.findById(parkingRecord.getParkingId())
+                                            .orElseThrow(
+                                                    () -> new ParkingLotNotExistingException("Parking lot not found")
+                                            );
+
+        // add checking to check if vehicle is already parked somewhere
+        // scan the whole parking record see if there is any isActive with its plate number or vehicle id
 
         // create new parkingRecord and assign the objects values
         ParkingRecord finalParkingRecord = new ParkingRecord();
@@ -48,7 +58,18 @@ public class ParkingProcessorService {
         return parkingProcessorRepo.findAll();
     }
 
-    public void checkOut(Long id) {
-        parkingLotRepository.findById(id);
+    public ResponseEntity<> checkOut(Long id) {
+        ParkingRecord parkingRecord = parkingProcessorRepo.findById(id)
+                                            .orElseThrow(
+                                                    () -> new ParkingRecordNotExistingException("This vehicle is not parked here.")
+                                            );
+
+        Integer parkingCostPerMinute = parkingRecord.getParking().getCostPerMin();
+        Integer parkingDuration = ParkingFeeCalculatorUtil.getTotalDurationInMinutes(parkingRecord.getCreated_at());
+
+        parkingRecord.setIsActive(false);
+        parkingProcessorRepo.save(parkingRecord);
+        String fee = ParkingFeeCalculatorUtil.getTotalFee(parkingDuration, parkingCostPerMinute);
     }
+
 }

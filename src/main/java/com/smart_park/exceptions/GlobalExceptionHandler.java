@@ -1,6 +1,7 @@
 package com.smart_park.exceptions;
 
 import com.smart_park.exceptions.parking.ParkingLotNotExistingException;
+import com.smart_park.exceptions.record.ParkingRecordNotExistingException;
 import com.smart_park.exceptions.vehicle.VehicleAlreadyExistsException;
 import com.smart_park.exceptions.vehicle.VehicleAlreadyParked;
 import com.smart_park.exceptions.vehicle.VehicleNotExistingException;
@@ -39,6 +40,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ParkingLotNotExistingException.class)
     public ResponseEntity<ErrorResponse> ParkingLotNotExistingException(ParkingLotNotExistingException ex) {
         return buildResponse(HttpStatus.UNPROCESSABLE_CONTENT, ex.getMessage());
+    }
+
+    // Vehicle is not parked in the lot
+    @ExceptionHandler(ParkingRecordNotExistingException.class)
+    public ResponseEntity<ErrorResponse> ParkingRecordNotExistingException(ParkingRecordNotExistingException ex) {
+        return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
