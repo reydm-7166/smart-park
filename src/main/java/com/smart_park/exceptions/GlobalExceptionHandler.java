@@ -1,8 +1,11 @@
 package com.smart_park.exceptions;
 
+import com.smart_park.exceptions.parking.ParkingLotFullCapacityException;
 import com.smart_park.exceptions.parking.ParkingLotNotExistingException;
+import com.smart_park.exceptions.record.ParkingRecordAlreadyCheckoutException;
+import com.smart_park.exceptions.record.ParkingRecordNotExistingException;
 import com.smart_park.exceptions.vehicle.VehicleAlreadyExistsException;
-import com.smart_park.exceptions.vehicle.VehicleAlreadyParked;
+import com.smart_park.exceptions.record.VehicleAlreadyParkedException;
 import com.smart_park.exceptions.vehicle.VehicleNotExistingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +27,8 @@ public class GlobalExceptionHandler {
     }
 
     // vehicle already parked exception
-    @ExceptionHandler(VehicleAlreadyParked.class)
-    public ResponseEntity<ErrorResponse> handleVehicleAlreadyParked(VehicleAlreadyParked ex) {
+    @ExceptionHandler(VehicleAlreadyParkedException.class)
+    public ResponseEntity<ErrorResponse> handleVehicleAlreadyParked(VehicleAlreadyParkedException ex) {
         return buildResponse(HttpStatus.UNPROCESSABLE_CONTENT, ex.getMessage());
     }
 
@@ -40,6 +43,25 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> ParkingLotNotExistingException(ParkingLotNotExistingException ex) {
         return buildResponse(HttpStatus.UNPROCESSABLE_CONTENT, ex.getMessage());
     }
+
+    // Vehicle is not parked in the lot
+    @ExceptionHandler(ParkingRecordNotExistingException.class)
+    public ResponseEntity<ErrorResponse> ParkingRecordNotExistingException(ParkingRecordNotExistingException ex) {
+        return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    // Vehicle is already checkout in this lot
+    @ExceptionHandler(ParkingRecordAlreadyCheckoutException.class)
+    public ResponseEntity<ErrorResponse> ParkingRecordAlreadyCheckout(ParkingRecordAlreadyCheckoutException ex) {
+        return buildResponse(HttpStatus.UNPROCESSABLE_CONTENT, ex.getMessage());
+    }
+
+    // Parking lot is a full capacity when vehicle tries to check in
+    @ExceptionHandler(ParkingLotFullCapacityException.class)
+    public ResponseEntity<ErrorResponse> ParkingLotFullCapacityException(ParkingLotFullCapacityException ex) {
+        return buildResponse(HttpStatus.UNPROCESSABLE_CONTENT, ex.getMessage());
+    }
+
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidation(MethodArgumentNotValidException ex) {

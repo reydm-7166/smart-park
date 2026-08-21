@@ -1,6 +1,7 @@
 package com.smart_park.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -35,8 +36,10 @@ public class ParkingLot {
         String location;
 
         @Positive(message = "Capacity should be valid.")
+        @Min(5)
         Integer capacity;
 
         @Positive(message = "CPM should be a valid amount.")
+        @Min(30)
         Integer costPerMin;
 }
