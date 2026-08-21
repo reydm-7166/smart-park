@@ -1,5 +1,6 @@
 package com.smart_park.exceptions;
 
+import com.smart_park.exceptions.auth.InvalidCredentialsProvidedException;
 import com.smart_park.exceptions.parking.ParkingLotFullCapacityException;
 import com.smart_park.exceptions.parking.ParkingLotNotExistingException;
 import com.smart_park.exceptions.record.ParkingRecordAlreadyCheckoutException;
@@ -62,6 +63,11 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.UNPROCESSABLE_CONTENT, ex.getMessage());
     }
 
+    // Invalid credentials provided
+    @ExceptionHandler(InvalidCredentialsProvidedException.class)
+    public ResponseEntity<ErrorResponse> InvalidCredentialsProvided(InvalidCredentialsProvidedException ex) {
+        return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage());
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidation(MethodArgumentNotValidException ex) {
@@ -71,6 +77,8 @@ public class GlobalExceptionHandler {
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
+
+
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleUnreadableBody(HttpMessageNotReadableException ex) {
