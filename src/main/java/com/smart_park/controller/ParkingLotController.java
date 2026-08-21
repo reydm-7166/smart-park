@@ -2,7 +2,7 @@ package com.smart_park.controller;
 
 
 import com.smart_park.domain.ParkingLot;
-import com.smart_park.dto.parking_lot.CheckVehiclesParkInLotResponse;
+import com.smart_park.dto.parking_lot.ParkingLotResponse;
 import com.smart_park.dto.vehicles.VehiclesParkedResponse;
 import com.smart_park.service.ParkingService;
 import jakarta.validation.Valid;
@@ -22,7 +22,7 @@ public class ParkingLotController {
 
     @GetMapping("")
     @ResponseStatus(HttpStatus.OK)
-    private Iterable<ParkingLot> getParking() {
+    private Iterable<ParkingLotResponse> getParking() {
         return parkingService.getAll();
     }
 
