@@ -19,6 +19,7 @@ import com.smart_park.util.ParkingFeeCalculatorUtil;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class ParkingProcessorService {
@@ -66,6 +67,7 @@ public class ParkingProcessorService {
         ParkingRecord finalParkingRecord = new ParkingRecord();
         finalParkingRecord.setVehicle(vehicle);
         finalParkingRecord.setParking(parkingLot);
+        finalParkingRecord.setIsActive(true);
 
         parkingProcessorRepo.save(finalParkingRecord);
     }
@@ -102,6 +104,13 @@ public class ParkingProcessorService {
         );
     }
 
+    /**
+     *
+     *
+     *
+     * @param id
+     * @return CheckAvailableParkingSpaceResponse
+     */
     public CheckAvailableParkingSpaceResponse checkAvailable(Long id) {
         // SELECT COUNT(*) from parking_record WHERE parking_id is equal to {id} AND parking_record.isActive = true;
         // then get parking_lot capacity subtract to query result, return and format.
@@ -121,6 +130,29 @@ public class ParkingProcessorService {
                 vacancy,
                 oldestParked
         );
+    }
+
+    /**
+     * This checks for PARKED vehicles longer than 15 mins (gets called every minute)
+     *
+     * @return void
+     */
+    public void checkoutAutomatically() {
+
+        System.out.println("Checkout automatically scanning vehicles parked for more than 15 mins ... ");
+
+        LocalDateTime cutOff = LocalDateTime.now().minusMinutes(1);
+        Iterable<ParkingRecord> parkRecords = parkingProcessorRepo.checkAllParkedRecords(cutOff);
+
+        for (ParkingRecord parkedVehicle : parkRecords) {
+            System.out.println("ParkingProcessorService, Parked vehicle id " + parkedVehicle.getId());
+            // call the checkout Method in the service
+            CheckoutResponse result = this.checkOut(parkedVehicle.getId());
+
+            // this is a cron job so ilog na lang ung checkout receipt/response
+            // usually this will be emailed and put to queue but test lang naman to
+            System.out.println("ParkingProcessorService, Parking receipt of vehicle " + parkedVehicle.getVehicle().getPlateNumber() + " has been checkout." + result.toString());
+        }
     }
 
 }
