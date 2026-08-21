@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -35,6 +35,8 @@ public class ParkingRecord {
     @Column(updatable = false)
     private LocalDateTime created_at;
 
-    @LastModifiedDate
+    @UpdateTimestamp
     private LocalDateTime updated_at;
+
+
 }

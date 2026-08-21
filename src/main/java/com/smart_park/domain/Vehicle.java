@@ -20,8 +20,6 @@ public class Vehicle {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer parked_in;
-
     @NotEmpty(message = "Plate number is required.")
     private String plateNumber;
 

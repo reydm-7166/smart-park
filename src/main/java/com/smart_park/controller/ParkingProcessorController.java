@@ -1,7 +1,9 @@
 package com.smart_park.controller;
 
 import com.smart_park.domain.ParkingRecord;
-import com.smart_park.dto.ParkingRecordRequestDTO;
+import com.smart_park.dto.parking_process.CheckAvailableParkingSpaceResponse;
+import com.smart_park.dto.parking_process.CheckoutResponse;
+import com.smart_park.dto.parking_process.CheckinRequest;
 import com.smart_park.service.ParkingProcessorService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -19,7 +21,7 @@ public class ParkingProcessorController {
 
     @PostMapping("/check-in")
     @ResponseStatus(HttpStatus.CREATED)
-    private void checkIn(@Valid @RequestBody ParkingRecordRequestDTO parkingRecord) {
+    private void checkIn(@Valid @RequestBody CheckinRequest parkingRecord) {
         parkingProcessorService.checkIn(parkingRecord);
     }
 
@@ -31,7 +33,12 @@ public class ParkingProcessorController {
 
     @PatchMapping("/{id}/check-out")
     @ResponseStatus(HttpStatus.OK)
-    private void checkout(@PathVariable Long id) {
-        parkingProcessorService.checkOut(id);
+    private CheckoutResponse checkout(@PathVariable Long id) {
+        return parkingProcessorService.checkOut(id);
+    }
+
+    @GetMapping("/{id}/check-available")
+    private CheckAvailableParkingSpaceResponse checkAvailable(@PathVariable Long id) {
+        return parkingProcessorService.checkAvailable(id);
     }
 }

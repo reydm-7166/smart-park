@@ -14,7 +14,14 @@ public class ParkingFeeCalculatorUtil {
         return decimal.format(totalFee);
     }
 
+    /**
+     * Calculate the customers stay, minimum is 3 mins.
+     *
+     * @return Integer
+     */
     public static Integer getTotalDurationInMinutes(LocalDateTime start) {
-        return Math.toIntExact(Duration.between(start, LocalDateTime.now()).toMinutes());
+        int total = Math.toIntExact(Duration.between(start, LocalDateTime.now()).toMinutes());
+
+        return Math.max(total, 3);
     }
 }
