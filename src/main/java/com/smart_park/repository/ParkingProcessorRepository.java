@@ -28,4 +28,7 @@ public interface ParkingProcessorRepository extends CrudRepository<ParkingRecord
 
     @Query("SELECT pk FROM ParkingRecord pk WHERE pk.created_at <= :cutOff AND pk.isActive = true")
     Iterable<ParkingRecord> checkAllParkedRecords(@Param("cutOff") LocalDateTime cutOff);
+
+    @Query("SELECT pk FROM ParkingRecord pk WHERE pk.parking.id = :id AND pk.isActive = true")
+    Iterable<ParkingRecord> checkParkedVehicles(@Param("id") Long id);
 }
