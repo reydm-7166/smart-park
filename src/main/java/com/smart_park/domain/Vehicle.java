@@ -1,9 +1,6 @@
 package com.smart_park.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -24,6 +21,7 @@ public class Vehicle {
     private String plateNumber;
 
     @NotNull(message = "Type is required.")
+    @Enumerated(EnumType.STRING)
     private Type type;
 
     @NotEmpty(message = "Name is required.")

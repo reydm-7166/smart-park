@@ -29,7 +29,7 @@ public class ParkingRecord {
     @JoinColumn(name = "parking_id", nullable = false)
     private ParkingLot parking;
 
-    private Boolean isActive = true;
+    private Boolean isActive;
 
     @CreationTimestamp
     @Column(updatable = false)

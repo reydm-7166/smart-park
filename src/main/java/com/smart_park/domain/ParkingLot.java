@@ -22,7 +22,7 @@ public class ParkingLot {
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
 
-        @Column(unique = true, nullable = false, updatable = false)
+        @Column(unique = true, nullable = true, updatable = false)
         private UUID lotId;
 
         @PrePersist
