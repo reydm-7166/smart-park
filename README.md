@@ -83,6 +83,9 @@ GET http://localhost:8080/api/v1/vehicle
 
 #### Create Parking Lot
 
+> **Note:** Occupied spaces are not stored as a column in the `ParkingLot` table because the column is heavily dynamic which means it will be read/updated very often will put a lot of unnecessary load in the database (i mean in a real scenario becos this is just a test) and depends on the current `ParkingRecord` entries.
+>
+> Instead, occupied spaces are calculated by querying active `ParkingRecord` records and included in the API response. This keeps the `ParkingLot` domain model focused on its static properties while ensuring the occupied and available spaces remain accurate.
 ```http
 POST http://localhost:8080/api/v1/parking-lot
 Content-Type: application/json
@@ -90,7 +93,8 @@ Content-Type: application/json
 {
   "location": "aaa",
   "capacity": 5,
-  "costPerMin": 50
+  "costPerMin": 50,
+  "occupiedSpaces": 0
 }
 ```
 
