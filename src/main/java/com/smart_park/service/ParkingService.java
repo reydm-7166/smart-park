@@ -2,7 +2,7 @@ package com.smart_park.service;
 
 import com.smart_park.domain.ParkingLot;
 import com.smart_park.domain.ParkingRecord;
-import com.smart_park.dto.parking_lot.CheckVehiclesParkInLotResponse;
+import com.smart_park.dto.parking_lot.ParkingLotResponse;
 import com.smart_park.dto.vehicles.VehiclesParkedResponse;
 import com.smart_park.exceptions.parking.ParkingLotNotExistingException;
 import com.smart_park.repository.ParkingLotRepository;
@@ -25,8 +25,21 @@ public class ParkingService {
         this.parkingProcessorRepo = parkingProcessorRepository;
     }
 
-    public Iterable<ParkingLot> getAll() {
-        return parkingRepo.findAll();
+    public Iterable<ParkingLotResponse> getAll() {
+        return parkingRepo.findAllWithOccupiedSpaces()
+                .stream()
+                .map(row -> {
+                    ParkingLot parkingLot = (ParkingLot) row[0];
+                    long occupiedSpaces = (Long) row[1];
+
+                    return new ParkingLotResponse(
+                            parkingLot.getLocation(),
+                            parkingLot.getCapacity(),
+                            parkingLot.getCostPerMin(),
+                            occupiedSpaces
+                    );
+                })
+                .toList();
     }
 
     public boolean create(ParkingLot parkingLot) {
